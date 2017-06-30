@@ -2,6 +2,15 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "tagValues": {
+            "type": "object",
+             "defaultValue": {
+                "environment": "test",
+                "project": "crmportal",
+                "billTo": "IT",
+                "managedBy": "user@domain.com"
+            }
+     },
     "adminUsername": {
       "type": "string",
       "metadata": {
@@ -53,6 +62,7 @@
       "name": "[variables('storageAccountName')]",
       "apiVersion": "2016-01-01",
       "location": "[resourceGroup().location]",
+      "tags": "[parameters('tagValues')]",
       "sku": {
         "name": "Standard_LRS"
       },
@@ -64,6 +74,7 @@
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('publicIPAddressName')]",
       "location": "[resourceGroup().location]",
+      "tags": "[parameters('tagValues')]",
       "properties": {
         "publicIPAllocationMethod": "Dynamic",
         "dnsSettings": {
@@ -76,6 +87,7 @@
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[variables('virtualNetworkName')]",
       "location": "[resourceGroup().location]",
+      "tags": "[parameters('tagValues')]",
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
@@ -97,6 +109,7 @@
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('nicName')]",
       "location": "[resourceGroup().location]",
+      "tags": "[parameters('tagValues')]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
         "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
@@ -123,6 +136,7 @@
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('vmName')]",
       "location": "[resourceGroup().location]",
+      "tags": "[parameters('tagValues')]",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
         "[resourceId('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
